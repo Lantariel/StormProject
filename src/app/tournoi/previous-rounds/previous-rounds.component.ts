@@ -6,6 +6,7 @@ import {Ronde} from '../../models/ronde.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Joueur} from '../../models/joueur.model';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-previous-rounds',
@@ -40,9 +41,14 @@ export class PreviousRoundsComponent implements OnInit {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        this.rondes = [] ;
-        for (let i = 0 ; i < this.tournoi.rondes.length - 1 ; i++)
-        { this.rondes.push(this.tournoi.rondes[i]) ; }
+
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+        else {
+          this.rondes = [] ;
+          for (let i = 0 ; i < this.tournoi.rondes.length - 1 ; i++)
+          { this.rondes.push(this.tournoi.rondes[i]) ; }
+        }
       }) ;
 
     this.roundFocus = -1 ;

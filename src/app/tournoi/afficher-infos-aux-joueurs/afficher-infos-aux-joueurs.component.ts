@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {TournoiService} from '../../services/tournoi.service';
 import {FormBuilder} from '@angular/forms';
 import {Joueur} from '../../models/joueur.model';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-afficher-infos-aux-joueurs',
@@ -34,7 +35,11 @@ export class AfficherInfosAuxJoueursComponent implements OnInit {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        this.triJoueurs = this.tournoiService.listeDesJoueursParOrdreAlphabetique(this.tournoi) ;
+
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+
+        else { this.triJoueurs = this.tournoiService.listeDesJoueursParOrdreAlphabetique(this.tournoi) ; }
       }) ;
   }
 

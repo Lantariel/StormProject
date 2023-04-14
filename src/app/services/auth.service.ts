@@ -10,7 +10,7 @@ export class AuthService {
 
   constructor() { }
 
-  createNewUser(email: string, password: string) {
+  createNewUser(email: string, password: string): any {
     return new Promise(
       (resolve, reject) => {
         firebase.auth().createUserWithEmailAndPassword(email, password).then(
@@ -25,7 +25,7 @@ export class AuthService {
     );
   }
 
-  signInUser(email: string, password: string) {
+  signInUser(email: string, password: string): any {
     return new Promise(
       (resolve, reject) => {
         firebase.auth().signInWithEmailAndPassword(email, password).then(
@@ -40,11 +40,11 @@ export class AuthService {
     );
   }
 
-  signOutUser() {
+  signOutUser(): any {
     firebase.auth().signOut() ;
   }
 
-  getCurrentUser(){
+  getCurrentUser(): any{
     const user = firebase.auth().currentUser;
 
     if (user)

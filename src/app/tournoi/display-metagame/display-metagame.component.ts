@@ -4,6 +4,7 @@ import {TournoiService} from '../../services/tournoi.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DeckInEvent} from '../../models/deckInEvent';
 import {Joueur} from '../../models/joueur.model';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-display-metagame',
@@ -36,7 +37,11 @@ export class DisplayMetagameComponent implements OnInit {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        this.getMetagame() ;
+
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+
+        else { this.getMetagame() ; }
       }) ;
 
     this.deckFocus = -1 ;

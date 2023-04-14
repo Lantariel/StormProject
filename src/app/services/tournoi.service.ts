@@ -228,6 +228,27 @@ export class TournoiService {
     this.emitTournois() ;
   }
 
+  isAuthor(tournament: Tournoi, user: string): boolean{
+    if (!tournament.isLive) { return false ; }
+    else {
+      let isAuthor = false ;
+      for (const editor of tournament.editors)
+      {
+        if (editor === user) { isAuthor = true ; }
+      }
+      return  isAuthor ;
+    }
+  }
+
+  isAuthorPrelaunch(tournament: Tournoi, user: string): boolean{
+      let isAuthor = false ;
+      for (const editor of tournament.editors)
+      {
+        if (editor === user) { isAuthor = true ; }
+      }
+      return  isAuthor ;
+  }
+
   /* == GESTION DES RONDES == */
 
   goToNexRound(tournament: Tournoi): void{

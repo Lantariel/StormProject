@@ -10,6 +10,7 @@ import {VariablesGlobales} from '../../services/variablesGlobales';
 import {Ronde} from '../../models/ronde.model';
 import {RondeService} from '../../services/ronde.service';
 import {AuthService} from '../../services/auth.service';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-gerer-tournoi',
@@ -71,18 +72,24 @@ export class GererTournoiComponent implements OnInit, OnDestroy {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        if (this.tournoi.registeredPlayers)
-        { this.nombreDeJoueurs = this.tournoi.registeredPlayers.length ; }
-        else
-        {
-          this.nombreDeJoueurs = 0 ;
-          this.tournoi.registeredPlayers = [] ;
+
+        if (!this.tournoiService.isAuthorPrelaunch(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+
+        else {
+          if (this.tournoi.registeredPlayers)
+          { this.nombreDeJoueurs = this.tournoi.registeredPlayers.length ; }
+
+          else
+          {
+            this.nombreDeJoueurs = 0 ;
+            this.tournoi.registeredPlayers = [] ;
+          }
+          if (this.tournoi.roundNumberIsFixed === true)
+          { this.forceRoundNumber = this.tournoi.nombreDeRondes ; }
+
+          this.joueursDuTournoi = this.tournoi.registeredPlayers ;
         }
-
-        if (this.tournoi.roundNumberIsFixed === true)
-        { this.forceRoundNumber = this.tournoi.nombreDeRondes ; }
-
-        this.joueursDuTournoi = this.tournoi.registeredPlayers ;
     }) ;
 
     this.joueurSubscription = this.joueurService.joueursSubject.subscribe(

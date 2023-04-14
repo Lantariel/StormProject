@@ -12,6 +12,7 @@ import {RondeService} from '../../services/ronde.service';
 import {Match} from '../../models/match.model';
 import {Penalty} from '../../models/penalty.model';
 import {AuthService} from '../../services/auth.service';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-gerer-rondes',
@@ -69,13 +70,20 @@ export class GererRondesComponent implements OnInit, OnDestroy {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        this.roundNumber = this.tournoi.rondeEnCours ;
-        this.rondeActuelle = this.tournoi.rondes[this.roundNumber - 1] ;
-        this.matchsEnCours = this.tournoi.currentMatches ;
 
-        if (this.rondeActuelle.firstPairingsAlreadySubmitted === true)
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+
+        else
         {
-          this.displayCreateMatchesButton = false ;
+          this.roundNumber = this.tournoi.rondeEnCours ;
+          this.rondeActuelle = this.tournoi.rondes[this.roundNumber - 1] ;
+          this.matchsEnCours = this.tournoi.currentMatches ;
+
+          if (this.rondeActuelle.firstPairingsAlreadySubmitted === true)
+          {
+            this.displayCreateMatchesButton = false ;
+          }
         }
       }) ;
     this.tournoiService.emitTournois();

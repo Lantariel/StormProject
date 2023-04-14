@@ -6,6 +6,7 @@ import {Tournoi} from '../../models/tournoi.model';
 import {Joueur} from '../../models/joueur.model';
 import {Match} from '../../models/match.model';
 import {AuthService} from '../../services/auth.service';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-switchpairings',
@@ -44,8 +45,13 @@ export class SwitchpairingsComponent implements OnInit {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        this.droppedPlayers = this.getDroppedPlayers() ;
-        this.started = this.roundStarted() ;
+
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+        else {
+          this.droppedPlayers = this.getDroppedPlayers() ;
+          this.started = this.roundStarted() ;
+        }
       }) ;
 
     this.initForm() ;

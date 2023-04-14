@@ -7,6 +7,7 @@ import {Form, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Match} from '../../models/match.model';
 import {AuthService} from '../../services/auth.service';
 import {Joueur} from '../../models/joueur.model';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-finalmatches',
@@ -49,9 +50,13 @@ export class FinalmatchesComponent implements OnInit {
         this.tournoi = tournoi ;
         this.matchsEnCours = this.tournoi?.currentMatches ;
 
-        if (this.matchsEnCours[0].joueur1 !== 15000)
-        { this.displayCreateMatchesButton = false ; }
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
 
+        else {
+          if (this.matchsEnCours[0].joueur1 !== 15000)
+          { this.displayCreateMatchesButton = false ; }
+        }
       }) ;
 
     this.tableFocus = -1 ;

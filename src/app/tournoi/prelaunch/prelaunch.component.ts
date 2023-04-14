@@ -7,6 +7,7 @@ import {RondeService} from '../../services/ronde.service';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {bindNodeCallback} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-prelaunch',
@@ -47,6 +48,8 @@ export class PrelaunchComponent implements OnInit {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
+        if (!this.tournoiService.isAuthorPrelaunch(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
       }) ;
 
     this.toggleDecklistInput = -1 ;

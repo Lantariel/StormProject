@@ -10,6 +10,7 @@ import {HttpClient} from '@angular/common/http';
 import {browser} from 'protractor';
 import {JoueurService} from '../../services/joueur.service';
 import {search} from 'scryfall-client/dist/api-routes/cards';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-gerer-joueurs',
@@ -70,7 +71,11 @@ export class GererJoueursComponent implements OnInit {
     this.tournoiService.getSingleTournoi(this.currentTournamentIndex).then(
       (tournoi: Tournoi) => {
         this.tournoi = tournoi ;
-        this.joueursDuTournoi = this.tournoi.currentStanding ;
+
+        if (!this.tournoiService.isAuthor(this.tournoi, firebase.auth().currentUser.email))
+        { this.router.navigate(['listetournois']) ; }
+
+        else { this.joueursDuTournoi = this.tournoi.currentStanding ; }
       }) ;
 
     this.playerFocus = -1 ;
