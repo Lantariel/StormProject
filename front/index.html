@@ -1,0 +1,94 @@
+<html>
+<head>
+<script>
+// Example POST method implementation:
+async function postData(url = "", data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
+}
+
+async function getData(url = "") {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin",
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
+}
+
+async function deleteTournament(url = ""){
+    // Default options are marked with *
+  const response = await fetch(url, {
+    method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin",
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  });
+}
+
+async function create(){
+  tournamentName = document.getElementById("newT").value;
+  tournament = {
+    Nom: tournamentName
+  }
+  result = await postData("http://localhost:3000/tournaments",tournament)
+  resultDiv = document.getElementById("result")
+  resultDiv.innerHTML = "New Tournament Created <br>Name : <b>" + result.Nom + "</b><br>ID : <b>"+result.ID+"</b>"
+}
+
+async function list(){
+  result = await getData("http://localhost:3000/tournaments")
+  str = "<b>All Tournaments</b><br>"
+  for(let tournament of result){
+    str = str + "Name : "+ tournament.Nom + ", ID : "+tournament.ID+"<br>"
+  }
+  resultDiv = document.getElementById("result")
+  resultDiv.innerHTML = str
+}
+
+async function del(){
+  tournamentId = document.getElementById("delT").value;
+  await deleteTournament("http://localhost:3000/tournaments/"+tournamentId)
+  resultDiv = document.getElementById("result")
+  resultDiv.innerHTML = "Succesfully Deleted Tournament "+tournamentId
+}
+
+</script>
+</head>
+<body>
+
+<input type="text"
+           id="newT"
+           name="newT"
+           placeholder="Tournament name">
+<button onclick="create()">Create new Tournament</button>
+<button onclick="list()">List All Tournaments</button>
+<input type="text"
+           id="delT"
+           name="delT"
+           placeholder="Tournament ID">
+<button onclick="del()">Delete Tournament</button>
+
+<div id="result"></div>
+
+</body>
+</html>
